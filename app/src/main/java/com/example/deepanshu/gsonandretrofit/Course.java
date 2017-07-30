@@ -1,16 +1,29 @@
 package com.example.deepanshu.gsonandretrofit;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by deepanshu on 26/7/17.
  */
 
 public class Course {
 
+    @SerializedName("id")
     private int mId;
+
+    @SerializedName("title")
     private String mTitle;
+
+    @SerializedName("name")
     private String mName;
+
+    @SerializedName("is_active")
     private boolean mIsActive;
+
+    @SerializedName("overview")
     private String mOverview;
+
+    @SerializedName("fee_with_taxes")
     private double mFeeWithTaxes;
 
     public Course(int id, String title, String name, boolean isActive, String overview, int feeWithTaxes) {
