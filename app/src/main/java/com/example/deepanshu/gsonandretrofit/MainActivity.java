@@ -1,13 +1,17 @@
 package com.example.deepanshu.gsonandretrofit;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.deepanshu.gsonandretrofit.network.ApiInterface;
 import com.example.deepanshu.gsonandretrofit.network.CourseResponse;
+import com.example.deepanshu.gsonandretrofit.network.RetrofitClass;
 
 import java.util.ArrayList;
 
@@ -17,7 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     final static String TAG = "TAG";
     ListView listView;
@@ -36,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
         courseTitleArrayList = new ArrayList<>();
         mCourseAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,courseTitleArrayList);
         listView.setAdapter(mCourseAdapter);
+        listView.setOnItemClickListener(this);
         fetchCourses();
 
     }
 
     private void fetchCourses() {
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://codingninjas.in/api/v1/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = RetrofitClass.getRetrofitInstance();
 
         ApiInterface apiInterface = retrofit.create(ApiInterface.class);
 
@@ -54,15 +58,11 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<CourseResponse> call, Response<CourseResponse> response) {
                 CourseResponse courseResponse = response.body();
                 ArrayList<Course> fetchedCourseList = courseResponse.data.getCourseArrayList();
-//                Log.i(TAG, "onResponse: "+ fetchedCourseList.size());
                 courseArrayList.clear();
                 courseTitleArrayList.clear();
                 courseArrayList.addAll(fetchedCourseList);
-//                Log.i(TAG, "onResponse: "+courseArrayList.size());
                 for(int i=0;i<courseArrayList.size();i++){
-                    Log.i(TAG, "onResponse: "+courseArrayList.get(i).getName());
                     Course course = courseArrayList.get(i);
-//                    Log.i(TAG, "onResponse: " + course.getTitle());
                     courseTitleArrayList.add(course.getTitle());
                 }
                 mCourseAdapter.notifyDataSetChanged();
@@ -73,5 +73,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this,CourseDetailsActivity.class);
+        intent.putExtra(IntentConstants.COURSE,courseArrayList.get(position));
+        startActivity(intent);
     }
 }

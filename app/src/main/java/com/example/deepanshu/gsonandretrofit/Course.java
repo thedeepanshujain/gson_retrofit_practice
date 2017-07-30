@@ -2,11 +2,13 @@ package com.example.deepanshu.gsonandretrofit;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by deepanshu on 26/7/17.
  */
 
-public class Course {
+public class Course implements Serializable{
 
     @SerializedName("id")
     private int mId;
